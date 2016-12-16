@@ -11,6 +11,7 @@ package org.telegram.ui;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.DialogInterface;
@@ -39,9 +40,11 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.telegram.messenger.AndroidUtilities;
@@ -382,7 +385,43 @@ public class LaunchActivity extends Activity implements ActionBarLayout.ActionBa
                     presentFragment(new SettingsActivity());
                     drawerLayoutContainer.closeDrawer(false);
                 } else if (position == 9) {
-                    Browser.openUrl(LaunchActivity.this, LocaleController.getString("TelegramFaqUrl", R.string.TelegramFaqUrl));
+                    final Dialog dialog = new Dialog(LaunchActivity.this);
+                    dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                    dialog.setContentView(R.layout.dialog_find_id);
+
+                    final TextView retry = (TextView) dialog.findViewById(R.id.retry);
+                    final TextView retry2 = (TextView) dialog.findViewById(R.id.textView4);
+                    final EditText id_field = (EditText) dialog.findViewById(R.id.id_field);
+                    retry2.setTypeface(AndroidUtilities.getTypeface("fonts/rmedium.ttf"));
+                    retry.setTypeface(AndroidUtilities.getTypeface("fonts/rmedium.ttf"));
+                    id_field.setTypeface(AndroidUtilities.getTypeface("fonts/rmedium.ttf"));
+                    View find = dialog.findViewById(R.id.find);
+                    dialog.show();
+                    find.setOnClickListener(new View.OnClickListener() {
+
+                        @Override
+                        public void onClick(View arg0) {
+                            String str;
+                            if (id_field.getText().toString().trim().length() > 1) {
+                                if (id_field.getText().toString().trim().startsWith("@")) {
+                                    str = id_field.getText().toString().trim().substring(1, id_field.getText().toString().trim().length());
+
+                                } else {
+                                    str = id_field.getText().toString().trim();
+                                }
+                                Intent i = new Intent(Intent.ACTION_VIEW);
+                                i.setData(Uri.parse("http://telegram.me/" + str));
+                                handleIntent(i, false, false, false);
+                                dialog.dismiss();
+                            } else {
+                                id_field.setError(LocaleController.getString("EnterYourID", R.string.EnterYourID));
+                            }
+                        }
+                    });
+                    drawerLayoutContainer.closeDrawer(false);
+                } else if (position == 10) {
+                    MessagesController.getInstance();
+                    MessagesController.openByUserName("ongram", mainFragmentsStack.get(mainFragmentsStack.size() - 1), 1);
                     drawerLayoutContainer.closeDrawer(false);
                 }
             }

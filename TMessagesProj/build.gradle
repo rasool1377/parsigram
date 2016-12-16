@@ -19,56 +19,44 @@ dependencies {
     compile 'com.googlecode.mp4parser:isoparser:1.0.6'
 }
 
+def base64EncodedPublicKey
+def marketApplicationId
+def marketApplicationIdBilling
+def setmarketApplicationId
+def marketName
+def server
+def market
+def payload
+def helpUrl
+
 android {
     compileSdkVersion 24
     buildToolsVersion '24.0.2'
 
     useLibrary 'org.apache.http.legacy'
-    defaultConfig.applicationId = "org.telegram.messenger"
-
-    sourceSets.main.jniLibs.srcDirs = ['./jni/']
-
-    externalNativeBuild {
-        ndkBuild {
-            path "jni/Android.mk"
-        }
+    defaultConfig.applicationId = "com.ongram"
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
     }
-
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7
         targetCompatibility JavaVersion.VERSION_1_7
     }
 
-    signingConfigs {
-        debug {
-            storeFile file("config/release.keystore")
-            storePassword RELEASE_STORE_PASSWORD
-            keyAlias RELEASE_KEY_ALIAS
-            keyPassword RELEASE_KEY_PASSWORD
-            v2SigningEnabled false
-        }
 
-        release {
-            storeFile file("config/release.keystore")
-            storePassword RELEASE_STORE_PASSWORD
-            keyAlias RELEASE_KEY_ALIAS
-            keyPassword RELEASE_KEY_PASSWORD
-            v2SigningEnabled false
-        }
-    }
 
     buildTypes {
         debug {
             debuggable true
             jniDebuggable true
-            signingConfig signingConfigs.debug
-            applicationIdSuffix ".beta"
+            applicationIdSuffix ""
         }
 
         release {
             debuggable false
             jniDebuggable false
-            signingConfig signingConfigs.release
+            shrinkResources false
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
@@ -76,11 +64,15 @@ android {
         foss {
             debuggable false
             jniDebuggable false
-            signingConfig signingConfigs.release
         }
     }
 
     defaultConfig.versionCode = 851
+
+    sourceSets.main {
+        jniLibs.srcDir 'libs'
+        jni.srcDirs = [] //disable automatic ndk-build call
+    }
 
     sourceSets.debug {
         manifest.srcFile 'config/debug/AndroidManifest.xml'
@@ -95,20 +87,90 @@ android {
     }
 
     productFlavors {
+
         x86 {
             ndk {
                 abiFilter "x86"
             }
+            base64EncodedPublicKey = ""
+            marketApplicationId = "ir.cafebazaar.pardakht"
+            setmarketApplicationId = "com.farsitel.bazaar"
+            marketApplicationIdBilling = "com.farsitel.bazaar.permission.PAY_THROUGH_BAZAAR"
+            buildConfigField "String", "Base64EncodedPublicKey", "\"${base64EncodedPublicKey}\""
+            buildConfigField "String", "SetmarketApplicationId", "\"${setmarketApplicationId}\""
+            buildConfigField "String", "MARKET_APPLICATION_ID", "\"${marketApplicationId}\""
+            manifestPlaceholders = [marketApplicationIdBilling: "${marketApplicationIdBilling}"]
             versionCode = 2
         }
-        armv7 {
+        arm {
+            ndk {
+                abiFilter "armeabi"
+            }
+            base64EncodedPublicKey = ""
+            marketApplicationId = "ir.cafebazaar.pardakht"
+            setmarketApplicationId = "com.farsitel.bazaar"
+            marketApplicationIdBilling = "com.farsitel.bazaar.permission.PAY_THROUGH_BAZAAR"
+            buildConfigField "String", "Base64EncodedPublicKey", "\"${base64EncodedPublicKey}\""
+            buildConfigField "String", "MARKET_APPLICATION_ID", "\"${marketApplicationId}\""
+            buildConfigField "String", "SetmarketApplicationId", "\"${setmarketApplicationId}\""
+            manifestPlaceholders = [marketApplicationIdBilling: "${marketApplicationIdBilling}"]
+            versionCode = 0
+        }
+        armv7_bazaar {
             ndk {
                 abiFilter "armeabi-v7a"
             }
-            versionCode = 1
+
+            base64EncodedPublicKey = "MIHNMA0GCSqGSIb3DQEBAQUAA4G7ADCBtwKBrwCmnWDAXVHO8+D0NiNATFodNhrv5lE1SYmxDCygG3nJ+ZONVtBAB1ic6QO+384O+rqkgGlJ/CSRrTW4NQumMgffZpZzq9R7Zvy/u26aHsuBpAfNEgy9zXpOtFWLucWqwhyH2se8rLgY6znOVfPU8YJTwBIpkK4FTUpQtEgpSTKnP2Ki0kVF/Ll4dVcs53+zY4Y0EZvrW4MDsVQPK6H9IPwemnsd7hfl87Ky6+u/LZECAwEAAQ=="
+            marketApplicationId = "ir.cafebazaar.pardakht"
+            setmarketApplicationId = "com.farsitel.bazaar"
+            marketApplicationIdBilling = "com.farsitel.bazaar.permission.PAY_THROUGH_BAZAAR"
+            marketName = "بازار"
+            payload = "bGoa+V7g/687weury89+JTFn4uQZbPiQJo4pf9RzJ"
+            market = "bazaar"
+            server = "http://http://talagram.info/talagram/payment/verify_bazaar_in_app.php"
+            helpUrl = "http://www.ghasedaak.ir/html/telehgramhelp.htm"
+            buildConfigField "String", "Base64EncodedPublicKey", "\"${base64EncodedPublicKey}\""
+            buildConfigField "String", "MARKET_APPLICATION_ID", "\"${marketApplicationId}\""
+            buildConfigField "String", "SetmarketApplicationId", "\"${setmarketApplicationId}\""
+            buildConfigField "boolean", "IsIAPenable", "true"
+            buildConfigField "boolean", "IsDownloadManagerEnable", "true"
+            manifestPlaceholders = [marketApplicationIdBilling: "${marketApplicationIdBilling}"]
+            buildConfigField "String", "marketName", "\"${marketName}\""
+            buildConfigField "String", "server", "\"${server}\""
+            buildConfigField "String", "market", "\"${market}\""
+            buildConfigField "String", "payload", "\"${payload}\""
+            buildConfigField "String", "helpUrl", "\"${helpUrl}\""
+
+
+            versionCode = 15
         }
-        fat {
-            versionCode = 3
+        armv7_myket {
+            ndk {
+                abiFilter "armeabi-v7a"
+            }
+            base64EncodedPublicKey = ""
+            marketApplicationId = "ir.mservices.market"
+            setmarketApplicationId = "ir.mservices.market"
+            marketName = "مایکت"
+            market = "myket"
+            payload = "hHhiep1624"
+            server = "http://http://talagram.info/talagram/payment/verify_myket_in_app.php"
+            helpUrl = "http://www.ghasedaak.ir/html/telehgramhelpmyket.htm"
+            marketApplicationIdBilling = "ir.mservices.market.BILLING"
+            buildConfigField "String", "Base64EncodedPublicKey", "\"${base64EncodedPublicKey}\""
+            buildConfigField "String", "MARKET_APPLICATION_ID", "\"${marketApplicationId}\""
+            buildConfigField "String", "SetmarketApplicationId", "\"${setmarketApplicationId}\""
+            buildConfigField "boolean", "IsIAPenable", "true"
+            buildConfigField "boolean", "IsDownloadManagerEnable", "true"
+            buildConfigField "String", "marketName", "\"${marketName}\""
+            manifestPlaceholders = [marketApplicationIdBilling: "${marketApplicationIdBilling}"]
+            buildConfigField "String", "server", "\"${server}\""
+            buildConfigField "String", "market", "\"${market}\""
+            buildConfigField "String", "payload", "\"${payload}\""
+            buildConfigField "String", "helpUrl", "\"${helpUrl}\""
+
+            versionCode = 15
         }
     }
 
@@ -120,14 +182,22 @@ android {
     defaultConfig {
         minSdkVersion 14
         targetSdkVersion 24
-        versionName "3.13.1"
-
+        versionName "3.13.1.0"
+        //  versionName "3.13.1.4"
+        multiDexEnabled = true
         externalNativeBuild {
             ndkBuild {
                 arguments "NDK_APPLICATION_MK:=jni/Application.mk", "APP_PLATFORM:=android-14"
                 abiFilters "armeabi-v7a", "x86"
             }
         }
+        /*  manifestPlaceholders = [manifestApplicationId          : "${applicationId}",
+  //Relase Mode
+                                  onesignal_app_id               : "d5661c3d-7284-4a46-9c0a-47a2ecb7cad7",
+                                  onesignal_google_project_number: "992390139063"]*/
+    }
+    dexOptions {
+        javaMaxHeapSize "1g"
     }
 }
 

@@ -205,7 +205,7 @@ public class ApplicationLoader extends Application {
         } catch (Exception e) {
             FileLog.e("tmessages", e);
         }
-        return new File("/data/data/org.telegram.messenger/files");
+        return new File("/data/data/com.ongram/files");
     }
 
     public static void postInitApplication() {
