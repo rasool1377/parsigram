@@ -34,7 +34,7 @@ android {
     buildToolsVersion '24.0.2'
 
     useLibrary 'org.apache.http.legacy'
-    defaultConfig.applicationId = "com.ongram"
+    defaultConfig.applicationId = "com.parsigram"
     lintOptions {
         checkReleaseBuilds false
         abortOnError false
